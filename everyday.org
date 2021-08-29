@@ -1,0 +1,809 @@
+#+STARTUP: overview
+* CENTOS 7 requirements <2019-07-24 Wed>
+** internet settings 
+*** enter root
+*** set IP address, GATEWAY and DNS
+**** cd /etc/sysconfig/network-scrpts/
+***** refer to [[http://blog.csdn.net/qq_24571549/article/details/78985089]]
+**** ll to search all files in the folder
+**** check, then edit "ifcfg-em1" file
+***** vi ifcfg-em1
+**** change contents in "ifcfg-em1" file
+***** i
+ *****+ BOOTPROTO=static
+ *****+ ONBOOT=yes
+ *****+ MACADDR=E8:9A:8F:66:35:3D
+ *****+ IPADDR=210.72.141.222
+ *****+ PREFIX=24
+ *****+ GATEWAY=210.72.141.1
+ *****+ DNS1=210.72.131.131
+ *****+ DNS2=210.72.133.252 
+***** :wq!
+*** service network restart
+*** ping www.baidu.com
+*** ip addr
+** EMACS
+*** refer to [[http://www.gnu.org/software/emacs/download.html#gnu-linux]]
+*** download and install
+**** refer to  https://blog.csdn.net/maxwell2ic/article/details/83011048
+ *****+ sudo yum install gcc make ncurses-devel giflib-devel libjpeg-devel libtiff-devel      
+ *****+ wget wget http://ftp.gnu.org/gnu/emacs/emacs-26.1.tar.gz
+ *****+ tar -xzvf emacs* && cd emacs*
+ *****+ ./configure --without-selinux
+ *****+ make && sudo make install
+**** sudo dont work [[sudo]]
+ *****+ emacs --version
+** sudo change user mode <<sudo>>
+***  resolve problem "chengh 不在 sudoers 文件中。此事将被报告。"
+**** login root
+***** ll /etc/sudoers
+**** change /etc/sudoers file mode
+***** chmod u+w /etc/sudoers or chmod 640 /etc/sudoers
+**** check and edit /etc/sudoers
+***** vi /etc/sudoers
+***** plus
+******+ chengh ALL=(ALL) ALL
+**** setback /etc/sudoers file mode
+***** chmod u-w /etc/sudoers or chmod 440 /etc/sudoers
+**** reboot
+*** 配置.emacs.d
+ 1）git clone https://github.com/lijiele/emacs.d/ .emacs.d
+ 2）cd ~/.emacs.d/
+ 3）git submodule update --init（git需要配置到环境变量中）
+ 4）cd ~/.emacs.d/site-lisp/html5-el
+ 5) make relaxng （svn需要配置到环境变量中)
+** U盘挂载 mount usb harddisk
+*** general mount
+**** login root
+**** make new directory
+***** mkdir /mnt/window or mkdir /mnt/usb
+**** check hard devices mounted in current machine
+***** fdisk -l
+***** maybe found devices named "sda" "sdb" "sdc" "sdf"
+**** mount device
+***** mount /dev/sdf1 /mnt/window or /mnt/usb
+**** cd /mnt/window
+**** unmount /mnt/window or unmount /dev/sdf1
+*** mount devices in NTFS system format
+**** need to download add-on "ntfs-3g"
+***** refer to https://www.tuxera.com/community/open-source-ntfs-3g/
+***** click donwload button to download lastest version
+**** install "ntfs-3g" file
+***** tar -zvxf ntfs-3g-*.tgz
+***** cd ntfs-3g-*
+***** ./configure --prefix=/usr/local/ntfs3g //compile
+***** make && make install //compile and insitall
+***** cd 
+***** rm -r -f ntfs-3g-* 
+**** mount devices 
+***** fdisk -l
+***** cd /mnt/window
+***** ntfs-3g /dev/sdf1 /mnt/window -o locale=ar_SA.UTF-8
+***** ls -all
+*** can't umount situation
+**** fuser -m /mnt/window
+**** fuser -km /mnt/window
+**** umount /mnt/window
+** hotKEY
+*** switch WORKSPACE
+**** CTRL + ALT + UP/DOWN ARROW
+* centos ISO system disk <2019-07-25 Thu>
+** cd /etc/yum.repos.d/
+** sudo wget ftp://ftp.mondorescue.org/rhel/7/x86_64/mondorescue.repo 
+** sudo yum install mondo
+** sudo mondoarchive
+** cd /var/cache/mondo
+* VMware-Workstation
+** installation
+*** enter the folder where software was
+**** cd /home/chengh
+*** install
+**** ./VMware-Workstation-*.bundle 
+*** activation key
+**** YG5H2-ANZ0H-M8ERY-TXZZZ-YKRV8
+*** startup
+**** /usr/lib/vmware/bin
+** installation problems
+*** ubuntu vmware kernel module updater
+**** refer to the LINKs
+***** [[https://my.oschina.net/u/4255396/blog/3470968][ubuntu vmware kernel module updater]]
+***** [[https://blog.csdn.net/zy_strive_2012/article/details/107541012?utm_medium=distribute.pc_relevant.none-task-blog-2~default~baidujs_title~default-4.control&spm=1001.2101.3001.4242][ubuntu18.04更新后VMware-workstation15.5.1弹窗kernel Module Updater并安装模块vmnet vmmon失败，解决办法]]
+***** [[https://github.com/mkubecek/vmware-host-modules/blob/master/INSTALL][vmware versions compiliation]]
+**** shell script
+***** /home/chenghe/Downloads/patch.sh
+****** shell content                                                                     
+       #!/bin/bash
+       VMWARE_VERSION=workstation-15.5.5
+       TMP_FOLDER=/tmp/patch-vmware
+       rm -fdr $TMP_FOLDER
+       mkdir -p $TMP_FOLDER
+       cd $TMP_FOLDER
+       git clone https://github.com/mkubecek/vmware-host-modules.git
+       cd $TMP_FOLDER/vmware-host-modules
+       git checkout $VMWARE_VERSION
+       git fetch
+       make
+       sudo make install
+       sudo rm /usr/lib/vmware/lib/libz.so.1/libz.so.1
+       sudo ln -s /lib/x86_64-linux-gnu/libz.so.1 /usr/lib/vmware/lib/libz.so.1/libz.so.1
+       sudo /etc/init.d/vmware restart
+** share folder
+*** on the /home/chengh side
+**** generate a new folder
+***** sudo mkdir /home/chengh/redhat_Vm/VM_data
+**** Example: /home/chengh/redhat_VM/VM_data
+*** on the Vmware Workstation side
+**** in the status when virtual machine was shutdown
+***** enter "Edit vitual machine settings"
+****** select "options" tab
+******* select "Shared Folders"
+******** select "Always enable"
+******** select "add"
+********* enter shared folder name
+********* browse host path
+********* select OK
+******** select SAVE
+**** Example: /mnt/hgfs/WMware_redhat_data
+** startup silvaco
+*** enter terminal => deckbuild & <2019-07-24 Wed>
+** Bios-> sys config-> Virtuallization Technology-> enable-> comfirm <2020-02-18 周二>
+* Maple
+** installtion
+*** must install the software under /home/chengh/ directory
+*** enter the folder where software was
+**** cd /home/chengh
+*** install
+**** by default software will be installed in /home/chengh/maple2019
+**** =here the directory is changed to /usr/local/maple2019=
+*** activation
+**** copy crack.pl file to /home/chengh
+***** cp crack.pl /home/chengh
+**** copy license.dat to /home/chengh/maple2019/license/
+***** sudo cp ~/license.dat maple2019/license
+**** chmod +x crack.pl
+**** chmod +x license.dat
+**** ./crack.pl 
+**** sudo ./crack.pl /home/chengh/maple2019/
+***** should showing
+      Your host id: 6c2b59e6f75e
+Unpatched maple2019//bin.X86_64_LINUX/libmaple.so version 2019.0 (build 1384062) detected!
+Gonna patch maple2019//bin.X86_64_LINUX/libmaple.so...
+Generating license files...
+**** =sudo cp /home/chengh/license.dat /usr/local/maple2019/license/=
+**** =sudo /home/chengh/crack.pl /usr/local/maple2019/=
+***** 
+*** startup
+**** cd /usr/local/maple2019/bin/
+**** ./maple => terminal interface
+***** showing
+    |\^/|     Maple 2019 (X86 64 LINUX)
+._|\|   |/|_. Copyright (c) Maplesoft, a division of Waterloo Maple Inc. 2019
+ \  MAPLE  /  All rights reserved. Maple is a trademark of
+ <____ ____>  Waterloo Maple Inc.
+      |       Type ? for help.
+
+**** ./xmpale => GUI interfac
+*** enter "stop" to logout<2019-07-24 Wed>--<2019-07-24 Wed>
+* ANSYS
+** installment
+*** LINUX
+**** Extract ISO file
+**** right click to extract Ansys.Products.2019R2.Linux64.iso file
+**** enter directory
+**** "cd Ansys.Products.2019R2.Linux64"
+**** install
+**** change mode
+***** "sudo chmod -R 777 Ansys.Products.2019R2.Linux64"
+**** cd Ansys.Products.2019R2.Linux64/
+**** sudo ./INSTALL
+**** GUI install
+**** skip all the configurations during the installation
+**** activation
+**** need _SolidSQUAD_/ directory 
+***** /home/chengh/_SolidSQUAD_/ANSYS.2019R2.LOCAL.LICENSING.LINUX64.CRACK-SSQ/shared_files
+**** enter ansys folder to find license folder, in case it is named shared_files
+***** cd /usr/ansys_inc
+**** copy and subsititute shared_files
+***** sudo cp -r /home/chengh/_SolidSQUAD_/ANSYS.2019R2.LOCAL.LICENSING.LINUX64.CRACK-SSQ/shared_files ./
+**** startup
+**** enter startup folder
+***** cd /usr/ansys_inc/v194/
+****** Example:cd /usr/ansys_inc/v194/fluent/bin => ./fluent
+****** Example:cd /usr/ansys_inc/v194/ansys/bin => ./launcher
+****** Example:cd /usr/ansys_inc/v194/Framework/bin/Linux64 => ./runwb2<2019-08-25 Sun>
+****** Example:cd /usr/ansys_inc/v194/icepak => ./icpak
+**** set bash
+*****  <2019-07-24 Wed>
+**** Install Nvidia graphic driver<2019-08-26 Sun>
+***** install gcc, gcc++
+****** command line text
+******* su -
+******* yum -y install gcc gcc-c++
+***** install NVIDIA driver inspection tool
+****** command line text
+******* KEY input
+******** rpm --import http://www.elrepo.org/RPM-GPG-KEY-elrepo.org
+******* install rpm source
+******** rpm -Uvh http://www.elrepo.org/elrepo-release-7.0-2.el7.elrepo.noarch.rpm
+******* install
+******** yum install nvidia-detect
+******* graphic driver inspection
+******** nvidia-detect-v
+******* download nvidia driver program
+******** NVIDIA-Linux-x86_64-430.40.run [[/home/chengh]]
+******* shutter local Nouveau graphic driver
+******** vim /lib/modprobe.d/dist-blacklist.conf 
+********* insert command line text
+********** blacklist nouveau
+********** options nouneau modeset=0
+********* annotations
+********** # blacklist nvidiafb
+******* rebuilt initramfs image
+******** backup
+********* mv /boot/initramfs-$(uname -r).img /boot/initramfs-$(uname 0r).img.bak
+******** rebuilt
+********* dracut /boot/initramfs-$(uname -r).img $(uname -r)
+******* reboot OS
+******** modify the operate level to text mode
+********* systemstl set-default multi-user.target
+******** reboot OS
+********* su -
+********* reboot 
+******** loggin as root
+********* su -
+******** check if nouveau is forbitten while the follow content is shown
+********* lsmod | grep nouveau
+******* install NVIDIA graphic driver
+******** change mode
+********* chmod +x NVIDIA-Linux-x86_64-430.40.run
+******** install
+********* cd /home/chengh
+********* ./NVIDIA-Linux-x86_64-430.40.run
+******** check if nvidia is completely installed
+********* nvidia-smi
+********** show output information of graphic card
+******** change operate level to GUI
+********* systemctl set-default graphical.target
+******** reboot
+********* su -
+********* reboot
+*** WINDOS
+**** CRACK
+***** answer "no" to licens file
+***** input host-name & host-id
+****** host-name
+******* DESKTOP-U3IRAK7
+****** host-id 
+******* MAC address of the PC
+** ANSYS leanring<2019-08-26 Mon>
+*** start DM
+**** startup WorkBench
+***** in TOOLBOX
+****** Component Systems
+******* Geometry
+******** Double Click to start DM
+*** edit in DM
+**** Creat 
+***** New Plane
+****** F5 to generate plane
+****** Sketch or Edit the objects in the plane
+***** Extrude
+****** F5 to generate
+****** add Frozen
+***** So on...
+****** F5 to generate
+****** add frozen
+*** ICEPAK
+*** Steady-State Thermal | analysis
+**** connect the Geometry tag to the one which is in Steady-State Thermal
+**** Double Click Model tag
+***** MESH
+****** right click
+******* Insert
+******** Sizing
+******** in Details of "Body Sizing" -- Sizing
+********* select ALL Bodies in "Scope -- Geometry tag"
+********* select Sphere of Influence in "Definition -- type tag"
+********* creat new Coordinate System in "Definition -- sphere radius tag"
+********* set sphere radius & element size in "Definition -- element size tag"
+********* F5 to generate mesh
+*** Maxwell <2020-02-18 周二>
+**** shortcut <2020-02-18 周二>
+***** /C-d/ for fit all
+***** /Alt + primary mouse botton + drag/ for rotating view
+***** /mouse wheel/ to zoom in or out
+***** /shift + primary mouse botton + drag/ for moving model
+***** /C-a/ to select all
+***** /press and hold C/ for multiple selections
+***** /C-S-a/ to deselect all
+***** /press and hold Alt + double click on top/right/left/bottom corners/ to have top/right/left/bottom view
+***** /F6/ to show wire frame
+***** /F7/ to show smooth mode
+***** tools-> keyboard shortcuts defining
+***** Press O to switch selection to Object mode
+**** modeler <2020-02-19 周三>
+***** check the scale of the model
+      -> tools bar -> Modeler -> Units -> select units
+***** modeler options
+      -> Tools -> Options -> Modeler options 
+      Operation: Clone, Coordinates, etc.
+      Display: (render,渲染), F6/F7 for specific rendering
+      Drawing: Snap, Operation Data Entry Mode, etc.
+**** tools <2020-02-20 周四>
+***** activates predifined views <2020-02-20 周四>
+****** hotkeys
+             Hold Alt + double click
+***** to switch between dX, dY or dZ <2020-02-20 周四>
+      press TAB while drawing
+***** right click to select Objects, Faces, Edggs, Vertices, Multi <2020-02-20 周四>
+***** check side-bar-window-box <2020-02-20 周四>
+      Solids -> double click 'Box1' -> to change Attribute of 'Box1' (Name, Materical, etc.)
+      note that no SPACE in the Name setting
+***** bondwire 107 <2020-02-20 周四>
+      --> Bondwires -> 'Type', 'No. of Facs', 'diameter', 'h1', 'h2', etc.
+      -> right click -> assignment Materital, or double click to change attributes.
+***** import 3d model (*.step file) <2020-02-20 周四>
+      check local mode botton is ON
+      -> Modeler -> import to select
+***** transform the imported model <2020-02-21 周五>
+****** Move the model
+       -> select the model -> push the 'move' botton -> drag & move
+       -> click move under the Solid tree, then to set the 'Move vector'= (x, y, z) position
+****** Measure the Distance
+       -> Modeler -> Measure -> Position
+****** change the model figure
+       -> select a face of the model -> right click -> Edit -> surface -> creat object from face
+       -> select the fiace -> Edit -> sweep the face -> creat a new model
+**** define a new material <2020-02-22 周六>
+***** how to do
+      -> right click -> assign material -> select definition -> Add material -> View/Edit Material -> manipulate properties -> Validate Material -> green checkmarked
+**** validate the model <2020-02-22 周六>
+***** how to do 
+      -> Validation Check:-> 
+      -> check the intersection error: when two objects are inside each other, make sure two object will just touch each other or to unite them (to click the 'UNITE' botton)
+**** solution types <2020-02-22 周六>
+***** how to do 
+      -> Maxwell 3D tag -> Solution Types -> dialog window with Solution Type -> to select Magnetic/Electric
+
+* disk partition <2019-07-24 Wed>
+** 
+*** sudo fdisk -l
+**** fdisk /dev/sdb2
+*** 
+**** sudo mkfs.ext4 /dev/sdb2
+*** 
+**** sudo mkdir /data
+*** 
+**** sudo mount /dev/sdb2 /data
+*** 
+**** sudo df -h
+*** 
+**** sudo vi /etc/fstab
+*** change/edit the file
+**** last line "/dev/sdb2 /data ext4 defaults 0 0"
+*** solve the problem below
+**** showing the following [problem 1] when reboot the computer
+***** A stop job is running for...
+***** means "didn't umount the disk"
+**** showing the following [notice 2]
+***** "the device '/dev/sdb1' doesn't seem to have a valid NTFS"
+* multi-terminal in one window  <2019-07-25 Thu>
+** open a terminal
+** C-S-t to open another terminal in the window
+*** Example: ctrl + shift + t to generate a terminal, once more ctrl + shift + t to generate another
+** M-# to select which terminal 
+*** Example: alt + 1, alt + 2, alt + 3,...
+* SOLVE root partition getting full problem <2019-07-25 Thu>
+** check WHICH folder is LAR2222GE under /
+*** sudo du -sh /*
+**** Example: can find that "/usr" is the largest one which is 49G
+*** check WHICH folder is LARGE under /usr
+**** sudo du -sh /usr/*
+***** Example: can find that "/usr/ansys_inc" is the largest one which is 31G
+** understand that ANSYS-related is disk-fulled
+* Input Keyboard <2019-07-26 Fri>
+** enter Region & Language panel
+*** plus/minus 
+**** select Chinese/Japanese in Pinyin/Kana
+*** Input Sources => OPtions
+**** Shift + Window + Space
+**** Window + Space
+* SOLVE umount target is busy PROBLEM <2019-07-26 Fri>
+** sudo fuser -mv /mnt/window
+** sudo fuser -km /mnt/window
+** sudo umount /mnt/window
+dd
+* mount usb flash memory<2019-08-29 Thu>
+** check disk information
+*** command line text
+**** sudo fdisk -l 
+**** to check the situation
+**** find the right "DISK LABEL"
+***** for example: sdd#
+** creat new folder "udisk" for usb flash
+*** command line text
+**** mkdir -p /mnt/udisk
+**** ls /mnt
+** mount the usb flash
+*** command line text
+**** mount -t ntfs-3g /dev/sdd1 /mnt/udisk
+**** ls /mnt/udisk
+** unmount the usb flash
+*** command line text 
+**** unmount /mnt/udisk
+* INstall CHROME<2019-08-28 Wed>
+** DOWNLOAD chrome
+*** https://www.chrome64bit.com/index.php/google-chrome-64-bit-for-linux
+** install chrome
+*** chmod 777 google-chrome*.rpm
+*** rpm -ivh google-chrome*.rpm
+** install dependencies
+*** showing need "libappindicator3.so.1" & "liberation-fonts"
+*** repoquery --nvr --whatprovides libappindicator3.so.1
+**** showing need "libappindicator-gtk3-12.10.0-13.el7"
+*** repoquery --nvr --whatprovides liberation-font
+**** showing need "liberation-font-1.07.2-16.el7"
+** install chrome rpm
+*** rpm -ivh google-chrome*.rpm
+*** sudo rpm -ivh google-chrome*.rpm
+* Install TeXLive2019
+** Download texlive2019
+*** find & download "texlive2019.iso" file
+** install per component
+*** command line text
+**** sudo yum install perl-Tk
+** mount ISO file
+*** command line text
+**** sodu mount -o loop texlive2019.iso /mnt
+** startup GUI installation interface
+*** command line text
+**** cd /mnt
+**** sudo ./install-tl -gui
+***** installation root
+****** /usr/local/texlive/2019
+***** disk space required: 5845MB
+** start installation
+** update
+*** command line text
+**** sudo tlmgr update --self --all
+* install texstudio
+** Download
+*** GOOGLE
+** install
+*** cd /home/chengh/Download
+*** ll
+*** chmode 777 texstudio*.rpm
+*** sudo rpm -ivh texstudio*.rpm
+** FIND pwd
+*** rpm -qpl texstudio*.rpm
+** reboot 
+* LaTeX
+** annotation
+*** On
+**** Ctrl + t
+*** OFF
+**** Ctrl + u
+** costumized hotkey
+*** side panel
+**** ON
+***** alt + 0
+**** OFF
+***** alt + 0
+** change color
+*** {\color{red}}
+** bold
+*** \textbf{}
+** switch label
+*** alt + right/left arrow
+** multi-line annotation
+*** \iffalse
+*** \fi
+** Latex+EMACS
+*** installation directory
+    c:\texlive\2019
+*** command line 'POWERSHELL'
+    Shift+right_botton         ;;open powershell terminal
+    > pdflatex *.tex RET    ;;compile *.tex file
+*** command line 'CMD'
+    > cd directory
+    > pdflatex *.tex RET
+*** chinese character input
+    \documentclass[utf8]{ctex/ctexart}
+    \usepackage[CJKUTF8]
+    \begin{CJK}[UTF8][gbsn]
+    \end{CJK}
+    'utf8' format save
+*** SAMURAI PDF/evince
+    set as default reader
+*** complition
+    C-c C-c   ;;complie command
+    TAB         ;;showing command
+* SILVACO <2019-10-10 Thu>
+** change VDS variation range to 0-0.8 V having good convergences on demonstrating IDS-VDS characteristics
+* paper <2019-12-02 Mon> 
+** references
+*** <<Numata.IEEE.2014>>
+**** a self-consistent compact model of ballistic nanowire mosfet with rectangular cross section, T. Numata
+*** <<Nikov.JJAP.2008>>
+**** solution of the Poisson equation with coulomb singularities, G. Mil'nikov, vol. 47, no. 10
+*** <<Nikov.JAP.2008>>
+**** R-matrix theory of quantum transport and recursive propagation method for device simulations, G. Mil'nikov, vol. 104, 044506
+*** <<Pons.JAP.2009>>
+**** original shaped nanowire metal-oxide-semiconductor field-effect transistor with enhanced current characteristics based on three-dimensional modeling, N. Pons, vol. 106, 053711
+*** <<Shin.JAP.2011>>
+**** efficient simulation of silicon nanowire field effect transistors and their scaling behavior, M. Shin, vol. 101, 024510
+*** <<Martinez.IEEE.2007>>
+**** a self-consistent full 3-D real-space negf simulator for studying nonperturbative effects in nano-mosfets, A. Martinez, vol. 54, no. 9
+*** <<Wang.JAP.2004>>
+**** a three-dimensional quantum simulation of silicon nanowire transistors with the effective-mass approximation, J. Wang, vol. 96, no. 4
+*** <<Venu.IEEE.2003>>
+**** simulating quantum transport in nanoscale mosfets: ballistic hole transport, subband enginnering and boundary conditions, R. Venugopal, vol. 2, no. 3
+*** <<A.H.Mars.SSE.1978>>
+**** electrical current in solids with position-dependent band structure, A.H.Marshak, vol. 21, no. 2
+*** <<Zhang.IEEE.2017>>
+**** nanoscale fets simulation based on full-complex-band structure and self-consistently solved atomic potential, X.Zhang, vol. 64, no. 1
+*** <<Rahman.IEEE.2002>>
+**** a compact scattering model for the nanoscale double-gate mosfet, A.Rahman, vol. 49, no. 3
+*** <<Liu.SSC.2003>>
+**** direct tunneling current model for mos devices with ultra-thin gate oxide including quantuization effect and polysilicon depletion effect, X.Liu, vol. 125
+*** <<Schenk.JAP.1997>>
+**** modeling and simulation of tunneling through ultra-thin gate dielectrics, A.Schenk, vol. 81, no. 12
+*** <<Wu.IEEE.2009>>
+**** analytical quantum-confinement model for short-channel gate-all-around mosfets under subthreshold region
+*** <<Munt.IEEE.2008>>
+**** modeling and simulation of single-event effects in digital devices and ICs, D.Munteanu, vol. 55, no. 4
+*** 
+** transmission coefficient
+*** $E_z$ is the kinetic energy along $z$-direction
+*** transmission coefficient is above zero even when the tatal electron energy is below the top of barrier of the first subband [[Wang.JAP.2004]]
+*** $T_{0,1}(E_z)$ represents the transmission coefficient at energy $E_z$ 
+*** $z_1$ and $z_2$ are the starting and ending position, along $z$-direction with energy $E$ for calculating the transmission coefficient [[Zhang.IEEE.2017]]
+*** tunneling current inside the bandgap [[Zhang.IEEE.2017]]
+*** transmission for S-D tunneling current calculation
+*** wkb approximation is applied to calculate the transmission [[Zhang.IEEE.2017]]
+*** transmission coefficient in wkb approximation [[rahman.ieee.2002]]
+*** $t_{\rm wkb}$ corresponds to the transmission probability of the normal wkb approximation [[liu.ssc.2003]]
+*** $z_{1,2}$ denote the classical turning points for a given carrier energy which follow from [[schenk.jap.1997]] 
+*** for each energy of the tunneling electrons, the barrier height becomes a function of energy [[schenk.jap.1997]] 
+*** carrier with lower energy can traverse the channel only by quantum mechanical tunneling through the source-to-drain barrier [[Munt.IEEE.2008]]
+** TUNNELING
+*** electron tunneling through [[Nikov.JAP.2008]] 
+*** dependence of the source-drain current on the length in the $z$-direction at fixed voltages [[Nikov.JAP.2008]] 
+*** tunneling contribution in the source-drain current will degrade the subthreshold parameters and decrease the on-off current ratio [[Pons.JAP.2009]]
+** simulation
+*** large amount of computational time and resource required [[Zhang.IEEE.2017]]
+*** several computational techniques require a significant amount of simulation time [[Numata.IEEE.2014]] 
+*** takes most of the computation time in the solution [[Shin.JAP.2011]]
+*** simulations were done for three values of $W=5,8 and 10 nm$ [[Shin.JAP.2011]]
+*** nonequilibrium green function transport simulations [[Martinez.IEEE.2007]]
+*** provide both computational efficiency and high accuracy as compared with NEGF [[Wang.JAP.2004]]
+*** the huge computational cost involved in such simulator [[Wang.JAP.2004]]
+** electrons influx
+*** electrons flowing into each electrode are not reflected back to the channel [[Numata.IEEE.2014]]
+*** assuming no back scattering in the electrode [[Nikov.JAP.2008]]
+*** there is no carrier reflection due to the potential profile [[Venu.IEEE.2003]]
+** fomula expression
+*** ... be derived as a function of ... [[Numata.IEEE.2014]]
+*** ... be derived by solving the equation [[Numata.IEEE.2014]]
+*** summation over ... [[Nikov.JJAP.2008]]
+*** with the corresponding ... [[Nikov.JJAP.2008]] 
+*** parameters correspond to [[Nikov.JJAP.2008]] 
+*** be computed as discribed in the preceding section [[Nikov.JJAP.2008]]
+*** be expressed in terms of ... as [[Nikov.JAP.2008]] 
+*** estimate [[Nikov.JAP.2008]] 
+*** be numerically evaluated [[Shin.JAP.2011]]
+*** inserting eqs. ... and ... into eq. and using the relation described by eq., then we obtain [[Wang.JAP.2004]] 
+*** inserting eqs. ... and ... or ...-... into eq., we can evaluate ... at a given energy $E$ [[Wang.JAP.2004]]
+*** be described by the parabolic form [[Wu.IEEE.2009]]
+** location
+*** along $z$-direction at $r=0$ [[Numata.IEEE.2014]]
+*** condition at the interface between the oxide and the channel at $r=0$ [[Numata.IEEE.2014]]
+** ultra-short *("shorter than 10nm" can be considered as ultra-short channel)*
+*** MOSFETs with ultra-short channels of $10-nm$ length [[Nikov.JJAP.2008]] 
+*** reach sub-10 nm dimension [[Pons.JAP.2009]]
+** integration
+*** integration in the equation is over ...
+** landauer formula
+*** the drain current according to the Landauer fomula [[Nikov.JAP.2008]] 
+*** 
+** ballistic and quantum transport
+*** it is widely recognized that quantum transport will be major factors affecting the scaling and the integration of nanodevices [[Pons.JAP.2009]]
+** structure
+*** the end of the channel of a Si nanowire surrounded by silicon oxide as schematically shown in figure [[Pons.JAP.2009]]
+** others
+*** parabolic energy band [[Wang.JAP.2004]]
+*** subband energy level at $z=z_0$ [[Wang.JAP.2004]]
+*** focus our attenttion on [[Venu.IEEE.2003]]
+*** at a fixed x location [[Venu.IEEE.2003]] 
+*** in a previous study [[A.H.Mars.SSE.1978]] 
+*** source-channel barrier of a mosfet [[Rahman.IEEE.2002]] <2019-12-02 Mon>
+* ELectroCHemitry <2019-12-02 Mon> 
+** Introduction
+*** Influence of charge between interfaces on transfer processes and factors
+ | System      | Charge Transfer  |
+ | electrode   | electrons/holes  |
+ | electrolyte | ions             |
+-/electrochemical cell is defined as TWO electrodes are saperated by at least ONE electrolyte/-
+*** potential difference between electrodes in the electrochemical cell
+**** cell potential is algibra summation of potential almong all the phases in the cell
+**** interface potential difference affects the energy, charge transfer directions and velocities
+*** 
+**  
+** 
+** 
+* SHELL <2019-12-10 Tue>
+** Command Interpreter 
+*** cat /etc/shells
+*** echo $SHELL
+** write a SHELL script
+*** EXample
+##!/bin/bash
+##annotation
+variables
+process & control structure
+**** see helloworld.sh
+*** execute EXample
+**** execution 1
+ ./helloworld.sh
+**** execution 2
+ /bin/sh helloworld.sh
+** alias
+*** cat $HOME/.bashrc
+** command exchange
+*** command `command filename` parameters
+** back-end process
+*** nohup
+*** jobs -l
+** variables
+*** information store
+*** Local variables
+**** Example
+LOCALTEST="test"
+echo $LOCALTEST
+**** EXample
+readonly LOCALTEST
+**** Example
+readonly
+set
+*** Environment variables
+**** Example
+$HOME/.bash_profile
+cat /ect/profile
+**** Example
+export variable_name="value"
+**** Example
+export
+env
+** pipe
+*** |
+** re-direction
+*** < import
+*** > export
+** special symbols
+*** ""
+*** ''
+*** `
+*** \
+*** ;
+*** 
+** locale <2021-08-28 Sat>
+   $LANG
+   echo $LANG
+   cat /etc/sysconfig/i18n
+   LANG=en_US.UTF-8
+** location parameter variables
+   $n number parameters
+   $* treat parameters as one union
+   $@ treat parameters as respective one
+   $# count the number of parameters
+* MATHEMATICA requirements <2019-07-24 Wed>
+** mathematica install file
+*** run installer
+**** refer to [[https://reference.wolfram.com/language/tutorial/InstallingMathematica.html]]
+**** Default installation under /usr/local requires root privileges.
+**** enter folder of installation file
+***** cd /usr/local
+**** installation
+***** type "sudo bash Mathematica_12.0.0_LINUX.sh"
+***** packages will be installed in the installation directory
+****** /usr/local/Wolfram/Mathematica/12.0
+***** the Wolfram Mathematica script(s) will be created in
+****** /usr/local/bin
+***** showing "install WolframScript system integration"
+**** run Mathematica Kernel
+***** cd /usr/local/Wolfram/Mathematica/12.0/Executables
+***** ./WolframKernel
+**** Keygen
+***** MathID
+****** 6522-24735-02125
+***** 1234-4321-123456
+****** 6252-884-979::1
+**** run Mathematica notebook interface (***.nb file)
+***** cd /usr/local/Wolfram/Mathematica/12.0/Executables
+***** ./mathematica
+** set environment variables
+*** $PATH
+*** echo $PATH
+*** export PATH=$PATH:/place/with/the/file
+**** Example:export PATH=$PATH:/usr/local/Wolfram/Mathmatica/12.0/Executables/
+*** ~/.bash_profile
+** disk management
+*** df
+*** du
+*** fdisk
+** systemmodeler install file
+*** run installer
+**** refer to [[http://support.wolfram.com/kb/12819]]
+**** installation
+***** cd /Desktop
+***** "sudo bash SystemModeler_12.0.0_LINUX.sh"
+***** packages will be installed in the installation directory
+****** /usr/local/Wolfram/SystemModeler/12.0
+***** the Wolfram Mathematica script(s) will be created in
+****** /usr/local/bin
+***** showing "install WolframScript system integration"
+**** run systemmodeler
+***** cd /usr/local/Wolfram/SystemModeler/12.0/bin/ModelCenter
+***** cd /usr/local/bin => ./systemmodeler
+**** Keygen
+***** MathID
+****** 6503-23064-78931
+***** activation key
+****** 3973-7213-822J7R
+***** pwd
+****** 1891-013-568::0,1,8,9
+* MATHEMATICA command
+** partial differential
+*** [esc] pd [esc] [ctrl [-]]
+** integration
+*** [esc] int [esc] [ctrl [-]] [ctrl [%]]
+** 
+* CygWin64 + Emacs
+** Problems
+*** CygWiin64 cannot startup Emacs
+**** SHowing
+     -bash: emacs: command not found
+***** SOLUTION One
+****** $PATH settings
+       -> Control Panel -> Systems and Security -> System -> Advanced System settings 
+       -> Environment Variables
+       -> user variables (-> ‘HOME’ -> D:\emacs\)
+       -> system variables (-> 'Path' -> D;\cygwin64\bin;D:\emacs\bin)
+****** restartup
+***** SOLUTION Two
+****** make a *.bat file
+******* stored in D:\emacs\
+	@echo off
+	set PLATFORM=native
+	D:\emacs\bin\runemacs.exe
+	set PLATFORM=cygwin
+	D:\cygwin64\bin\mintty.exe
+* SHELL
+** numerical expressions 
+*** command
+**** declare [-/+] [option] variables-name
+***** -
+      set type/attributes of variables
+***** +
+      unset/cancle type/attributes of variables
+***** -a
+      set number group
+***** -i
+      set integer
+***** -x
+      set environment variables
+***** -r
+      set read-only
+***** -p
+      echo declared type of variables
+*** $(( ))
+* TCL
+** apt-get install tcl
+** command
+* Installment of Redhat
+** download rufus
+* github
+  git config --list
+** check status
+   git status
+   git commit -m "comment" filename
