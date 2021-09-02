@@ -686,16 +686,8 @@ env
 *** \
 *** ;
 *** 
-** locale <2021-08-28 Sat>
-   $LANG
-   echo $LANG
-   cat /etc/sysconfig/i18n
-   LANG=en_US.UTF-8
-** location parameter variables
-   $n number parameters
-   $* treat parameters as one union
-   $@ treat parameters as respective one
-   $# count the number of parameters
+** 
+** 
 * MATHEMATICA requirements <2019-07-24 Wed>
 ** mathematica install file
 *** run installer
@@ -804,6 +796,28 @@ env
 ** download rufus
 * github
   git config --list
+** setting of SSH Key
+   ssh-keygen -t rsa -C "teigach@hotmail.com"
+*** passwd
+    Ch963852741
+*** notice
+    id_rsa file is private key
+    id_rsa.pub file is public key
+*** add public key into Github
+    cat ~/.ssh/id_rsa.pub
+**** check
+     ssh-rsa $public_key teigach@hotmail.com
+**** go to account_settings.SSH_&_GPG_keys to set SSH_keys
+**** test
+     ssh -T git@github.com
+     Ch963852741
+     Hi teigaCHENG! You've successfully authenticated, but GitHub does not provide shell access.
+** CHECK repository path
+   git@github.com:teigaCHENG/program.git
+*** command
+    git clone git@github.com:teigaCHENG/program.git
 ** check status
-   git status
-   git commit -m "comment" filename
+   git status git commit -m "comment" filename
+** 
+** 
+
