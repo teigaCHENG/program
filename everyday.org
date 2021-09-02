@@ -817,7 +817,12 @@ env
 *** command
     git clone git@github.com:teigaCHENG/program.git
 ** check status
-   git status git commit -m "comment" filename
-** 
-** 
+   git status
+*** git add
+    git add file_name
+    git commit -m "comment" filename
+*** check log
+    git log
+** push
+   git push
 
