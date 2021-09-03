@@ -835,4 +835,8 @@ env
     git log
 ** push <2021-09-02 Thu>
    git push
+** total flow
+   git add file_name | git status
+   git commit | git status
+   git push | git status
 
