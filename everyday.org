@@ -789,14 +789,24 @@ env
 ***** -p
       echo declared type of variables
 *** $(( ))
+** sed
+** source code installation
+*** command
+    tar -zxvf $*$.tar.gz
+    cd $*$
+    ls
+    ./configure
+    make
+    sudo make install
+** 
 * TCL
 ** apt-get install tcl
 ** command
 * Installment of Redhat
 ** download rufus
-* github
+* github <2021-09-01 Wed>
   git config --list
-** setting of SSH Key
+** setting of SSH Key <2021-09-02 Thu>
    ssh-keygen -t rsa -C "teigach@hotmail.com"
 *** passwd
     Ch963852741
@@ -812,17 +822,17 @@ env
      ssh -T git@github.com
      Ch963852741
      Hi teigaCHENG! You've successfully authenticated, but GitHub does not provide shell access.
-** CHECK repository path
+** CHECK repository path <2021-09-02 Thu>
    git@github.com:teigaCHENG/program.git
 *** command
     git clone git@github.com:teigaCHENG/program.git
-** check status
+** check status <2021-09-02 Thu>
    git status
 *** git add
     git add file_name
     git commit -m "comment" filename
 *** check log
     git log
-** push
+** push <2021-09-02 Thu>
    git push
 
