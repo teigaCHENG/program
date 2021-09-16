@@ -1,5 +1,8 @@
 #!/bin/bash
 #
+# command form: command $1 $2
+# $1: target file
+# $2: target folder place
 # goto the shared folder
 sharef=/mnt/hgfs/VMware_redhat_data/VDS06/multi_subband/
 #
@@ -9,7 +12,7 @@ then
 cp $1.dat $1.txt
 #
 # trim useless content in new .txt file
-# in case from 1st and 48th lines need to be deleted
+# in case from 1st to 48th lines need to be deleted
 sed -i '1,48d' $1.txt 
 #
 # select the needed data in columns,
@@ -31,6 +34,7 @@ gawk '{print $1, $44}' $1.txt > $1.new.dg2ndsub.txt
 echo 2> err.txt
 #
 # copy the generated file to share folder
+# $2 shows the destinated location where to copy the result files into
 cp $1.new.1stsub.txt $1.new.2ndsub.txt $1.new.3rdsub.txt $1.new.4thsub.txt $1.new.dg1stsub.txt $1.new.dg2ndsub.txt $sharef/$2/
 #
 #copy&transfer .log file into  .txt file
