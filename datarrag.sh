@@ -1,6 +1,11 @@
 #!/bin/bash
 #
+# goto the shared folder
+sharef=/mnt/hgfs/VMware_redhat_data/VDS06/multi_subband/
+#
 # copy&transfer .dat file into .txt file
+if [ -f $1.dat ]
+then
 cp $1.dat $1.txt
 #
 # trim useless content in new .txt file
@@ -24,3 +29,17 @@ gawk '{print $1, $44}' $1.txt > $1.new.dg2ndsub.txt
 #
 # output error message
 echo 2> err.txt
+#
+# copy the generated file to share folder
+cp $1.new.1stsub.txt $1.new.2ndsub.txt $1.new.3rdsub.txt $1.new.4thsub.txt $1.new.dg1stsub.txt $1.new.dg2ndsub.txt $sharef/$2/
+#
+#copy&transfer .log file into  .txt file
+elif [ -f $1.log ]
+then
+cp $1.log $1.txt
+sed -i '1,22d' $1.txt
+gawk '{print $2, $3}' $1.txt > $1.trans.txt
+cp $1.trans.txt $sharef/$2/
+else
+	echo "not usefull files" 
+fi
