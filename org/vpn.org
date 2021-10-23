@@ -1,0 +1,27 @@
+* stellar
+** install
+   download *.deb file
+   check ~/Download/Stellar*.deb
+   double click the .deb file to finish installment
+** register
+   have an account
+   | username            | passwd   |
+   | teigach@hotmail.com | ch963852 |
+   | teigach@qq.com      | ch963852 |
+** setup
+   cd /opt/Stellar
+   ./stellar
+* proton
+** install 
+   download *.deb file
+   check ~/Download/protonvpn*.deb
+   double click the .deb file to install 
+   [[https://protonvpn.com/support/official-linux-vpn-mint/][protonvpn installment introduction]]
+** register
+   make an account
+   | username |    passwd |
+   | muraoku  | 963852741 |
+** setup
+   whereis protonvpn
+   cd /usr/bin/
+   ./proton
