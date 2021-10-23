@@ -1,0 +1,239 @@
+#+STARTUP: overview
+* emacs-lisp  
+  input "<s" + "tab" or input "C-c C-, s (for reveal.js enabled)" to set environment
+  then "C-c '" to open a input window
+* interface
+#+BEGIN_SRC emacs-lisp
+(setq inhibit-startup-message t)
+(fset 'yes-or-no-p 'y-or-n-p)
+(global-set-key (kbd "<f5>") 'revert-buffer)
+#+END_SRC
+* try
+#+BEGIN_SRC emacs-lisp
+(use-package try
+    :ensure t)
+#+END_SRC
+
+* Which-key
+#+BEGIN_SRC emacs-lisp
+(use-package which-key
+    :ensure t
+    :config (which-key-mode))
+#+END_SRC
+
+* org-mode stuff
+#+BEGIN_SRC emacs-lisp
+(require 'org-bullets)
+(add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+(tool-bar-mode -1)
+#+END_SRC
+** time record
+   "C-c C-x ." to start then "C-c C-x ." to pause and "C-u C-c C-x ," to stop
+   0:00:00 0:00:06 
+* ido
+#+BEGIN_SRC emacs-lisp
+(setq ido-enable-flex-matching t)
+(setq ido-everywhere t)
+(ido-mode 1)
+#+END_SRC
+
+* buffers
+** ibuffer
+   buffers C-x C-b to list
+   split buffers and switch to them C-x o
+   C-x o to switch buffers
+#+BEGIN_SRC emacs-lisp
+(defalias 'list-buffers 'ibuffer)
+;;;;(winner-mode 1)
+#+END_SRC
+** ace-window
+#+BEGIN_SRC emacs-lisp
+(use-package ace-window
+  :ensure t
+  :init
+  (progn
+    (global-set-key [remap other-window] 'ace-window)
+    (custom-set-faces
+     '(aw-leading-char-face
+       ((t (:inherit ace-jump-face-foregrounnd :height 1.0)))))
+    ))
+#+END_SRC
+
+* swiper
+  combine to swiper
+#+BEGIN_SRC emacs-lisp
+(use-package counsel
+  :ensure t
+  )
+;; search
+(use-package swiper
+  :ensure t
+  :bind (("C-s" . swiper)
+	 ("C-r" . swiper)
+	 ("C-c C-r" . ivy-resume)
+	 ("M-x" . counsel-M-x)
+	 ("C-x C-f" . counsel-find-file))
+  :config
+  (progn
+    (ivy-mode 1)
+    (setq ivy-use-virtual-buffers t)
+    (setq ivy-display-style 'fancy)
+    (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
+    ))
+;;    (setq enable-recursive-minibuffers t)
+;; enable this if you want `swiper' to use it
+;; (setq search-default-mode #'char-fold-to-regexp)
+;;    (global-set-key "\C-s" 'swiper)
+;;    (global-set-key (kbd "C-c C-r") 'ivy-resume)
+;;    (global-set-key (kbd "<f6>") 'ivy-resume)
+;;    (global-set-key (kbd "M-x") 'counsel-M-x)
+;;    (global-set-key (kbd "C-x C-f") 'counsel-find-file)
+;;    (global-set-key (kbd "<f1> f") 'counsel-describe-function)
+;;    (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
+;;    (global-set-key (kbd "<f1> o") 'counsel-describe-symbol)
+;;    (global-set-key (kbd "<f1> l") 'counsel-find-library)
+;;    (global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
+;;    (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
+;;   (global-set-key (kbd "C-c g") 'counsel-git)
+;;    (global-set-key (kbd "C-c j") 'counsel-git-grep)
+;;    (global-set-key (kbd "C-c k") 'counsel-ag)
+;;    (global-set-key (kbd "C-x l") 'counsel-locate)
+;;    (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
+;;    (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)
+;;    ))
+#+END_SRC
+
+* avy
+  jump to positions 
+#+BEGIN_SRC emacs-lisp
+(use-package avy
+  :ensure t
+  :bind (("M-s" . avy-goto-char)
+	 ("M-g f" . avy-goto-line)))
+#+END_SRC
+
+* auto-completion
+  auto completion
+#+BEGIN_SRC emacs-lisp
+(use-package auto-complete
+  :ensure t
+  :init
+  (progn
+    (ac-config-default)
+    (global-auto-complete-mode t)
+    ))
+#+END_SRC
+
+* theme
+#+BEGIN_SRC emacs-lisp
+    (color-theme-initialize)
+  ;;(use-package color-theme-modern)
+  ;;  :ensure t)
+  ;;(use-package color-theme-gnome2
+  ;;  :ensure t
+  ;;  :config (load-theme 'gnome2 t))
+ ;; (require 'color-theme)
+  ;;(require 'deftheme)			;
+  (color-theme-gnome2)
+  ;;(color-theme 'atom-one-dark t)
+#+END_SRC
+* Flycheck
+#+BEGIN_SRC emacs-lisp
+  (use-package flycheck
+    :ensure t
+    :init
+    (global-flycheck-mode t))
+#+END_SRC
+* reveal.js
+  #+BEGIN_SRC emacs-lisp
+    (use-package ox-reveal
+      :ensure ox-reveal)
+    
+    (setq org-reveal-root "http://cdn.jsdelivr.net/reveal.js/3.0.0")
+    (setq org-reveal-mathjax t)
+    (org-enable-reveal-js-support t)
+  #+END_SRC
+* python
+  
+#+BEGIN_SRC emacs-lisp
+  (use-package jedi
+    :ensure t
+    :init
+    (add-hook 'python-mode-hook 'jedi:setup)
+    (add-hook 'python-mode-hook 'dedi:ac-setup))
+
+  (use-package elpy
+    :ensure t
+    :config
+    (elpy-enable))
+#+END_SRC
+* yasnippet
+  
+#+BEGIN_SRC emacs-lisp
+  (use-package yasnippet
+    :ensure t
+    :init
+    (yas-global-mode 1))  
+#+END_SRC
+* undo tree
+  "C-x u" to activiate undo
+#+BEGIN_SRC emacs-lisp
+  (use-package undo-tree
+    :ensure t
+    :init
+    (global-undo-tree-mode)
+
+#+END_SRC
+* artist mode
+  "M-x artist-mode" to start 
+  push middle botton to select input mode
+* Misc package
+  
+#+BEGIN_SRC emacs-lisp
+(global-hl-line-mode t)
+
+(use-package beacon
+:ensure t
+:config
+(beacon-mode 1))
+#+END_SRC
+
+* PDF-tools
+  when open a pdf file, need to enable the pdf-view-mode
+  "M-x pdf-view-mode"
+#+BEGIN_SRC emacs-lisp
+  (use-package pdf-tools
+    :ensure t
+    :config
+    (pdf-tools-install)
+    (pdf-view-mode))
+    
+  (use-package org-pdftool
+    :ensure t
+    :hook (org-load-hook . org-pdftools-setup-link)
+    )  
+  ;;(provide 'cogent-reading)
+#+END_SRC
+
+
+
+
+* load other file
+  (load-file "something.el")
+  #+begin_src emacs-lisp
+    
+  #+end_src
+* web mode
+
+  #+begin_src emacs-lisp
+    (use-package web-mode
+      :ensure t
+      :config
+      (add-to-list 'auto-mode-alist '("\\.html?\\" . web-mode))
+      (setq web-mode-engins-alist
+	    '(("django" . "\\.html\\'")))
+      (setq web-mode-ac-sources-alist
+	    '(("css" . (ac-source-css-property))
+	      ("html" . (ac-sources-words-in-buffer ac-source-abbrev))))
+      (setq web-mode-enable-auto-closing t))
+  #+end_src
