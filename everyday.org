@@ -754,7 +754,7 @@ env
 *** [esc] pd [esc] [ctrl [-]]
 ** integration
 *** [esc] int [esc] [ctrl [-]] [ctrl [%]]
-** 
+** [learn] =Transformation Rules and Definitions=
 * CygWin64 + Emacs
 ** Problems
 *** CygWiin64 cannot startup Emacs
