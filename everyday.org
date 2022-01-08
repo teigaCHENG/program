@@ -844,4 +844,9 @@ env
    git add file_name | git status
    git commit | git status
    git push | git status
-
+* oracle cloud
+** SSH to opc
+*** ssh -i ~/Downloads/'ssh-key-2022-01-08 (1).key' opc@146.56.133.96
+*** need ssh-genken command to create a key-pair
+*** check ~/.ssh folder
+*** need the ssh private key password
