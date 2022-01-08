@@ -849,7 +849,9 @@ env
   teigach@hotmail.com
   Ch@963852741
 ** SSH to opc
-*** ssh -i ~/Downloads/'ssh-key-2022-01-08 (1).key' opc@146.56.133.96
+*** ssh -i ~/Downloads/'ssh-key-2022-01-08 (1).key' opc@146.56.147.174
+*** ssh -i ~/.ssh/id_rsa opc@146.56.133.96
 *** need ssh-genken command to create a key-pair
 *** check ~/.ssh folder
 *** need the ssh private key password
+** 
