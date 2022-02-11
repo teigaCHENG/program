@@ -854,4 +854,5 @@ env
 *** need ssh-genken command to create a key-pair
 *** check ~/.ssh folder
 *** need the ssh private key password
-** 
+** to login as root
+*** sudo -i 
