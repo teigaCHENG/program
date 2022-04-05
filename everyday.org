@@ -856,3 +856,8 @@ env
 *** need the ssh private key password
 ** to login as root
 *** sudo -i 
+* linux-remote-windows
+** cmd
+   sudo pacman -S freerdp
+   sudo pacman -S krdc
+   sudo krdc
